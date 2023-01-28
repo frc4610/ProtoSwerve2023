@@ -6,9 +6,12 @@ package frc.robot.commands;
 
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+
+import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.subsystems.SwerveDriveMK4; //Drivebase Subsystem
-import java.util.function.DoubleSupplier;
 
 public class DriveCommand extends CommandBase {
 
@@ -33,20 +36,22 @@ addRequirements(drivetrainSubsystem);
 
 
 @Override
-public void execute() {
+public  void execute() {
 // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement
-m_drivetrainSubsystem.drive(
-ChassisSpeeds.fromFieldRelativeSpeeds(
+m_drivetrainSubsystem.drive( ChassisSpeeds.fromFieldRelativeSpeeds(
 m_translationXSupplier,
 m_translationYSupplier,
 m_rotationSupplier,
 m_drivetrainSubsystem.getGyroscopeRotation()
-)
-);
+));
+}
+
+public  boolean isFinished(){
+ return false;
 }
 
 @Override
-public void end(boolean interrupted) {
+public  void end(boolean interrupted) {
 m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
 }
 }

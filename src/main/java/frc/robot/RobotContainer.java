@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -25,13 +26,17 @@ public class RobotContainer {
   // The enum used as keys for selecting the command to run.
   private SwerveDriveMK4 m_drivetrainSubsystem = new SwerveDriveMK4();
   private final XboxController m_Controller = new XboxController(0);
+  private final DriveCommand m_DriveCommand = new DriveCommand(m_drivetrainSubsystem, 0.0, 0.0, 0.0);
+
 
   public RobotContainer() {
+  //  CommandScheduler.getInstance().registerSubsystem(m_drivetrainSubsystem);
+
   m_drivetrainSubsystem.setDefaultCommand(new DriveCommand(
     m_drivetrainSubsystem, 
-    m_Controller.getLeftY() * SwerveDriveMK4.MAX_VELOCITY_METERS_PER_SECOND,
-    m_Controller.getLeftX() * SwerveDriveMK4.MAX_VELOCITY_METERS_PER_SECOND,
-    m_Controller.getRightX() * SwerveDriveMK4.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+     m_Controller.getLeftX() * SwerveDriveMK4.MAX_VELOCITY_METERS_PER_SECOND,
+      m_Controller.getLeftY() * SwerveDriveMK4.MAX_VELOCITY_METERS_PER_SECOND,
+     m_Controller.getRightX() * SwerveDriveMK4.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
   ));
     // Configure the button bindings
     configureButtonBindings();
@@ -54,4 +59,5 @@ public class RobotContainer {
     return null;
   
   }
+
 }
