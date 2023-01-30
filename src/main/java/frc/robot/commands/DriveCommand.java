@@ -17,41 +17,52 @@ public class DriveCommand extends CommandBase {
 
   public  SwerveDriveMK4 m_drivetrainSubsystem;
 
-  private  Double m_translationXSupplier;
-  private  Double m_translationYSupplier;
-  private  Double m_rotationSupplier;
+  private  DoubleSupplier m_translationXSupplier;
+  private  DoubleSupplier m_translationYSupplier;
+  private  DoubleSupplier m_rotationSupplier;
 
   
 public DriveCommand(SwerveDriveMK4 drivetrainSubsystem,
-  Double translationXSupplier,
-  Double translationYSupplier,
-  Double rotationSupplier) {
+  DoubleSupplier d,
+  DoubleSupplier e,
+  DoubleSupplier f) {
 this.m_drivetrainSubsystem = drivetrainSubsystem;
-this.m_translationXSupplier = translationXSupplier;
-this.m_translationYSupplier = translationYSupplier;
-this.m_rotationSupplier = rotationSupplier;
+this.m_translationXSupplier = d;
+this.m_translationYSupplier = e;
+this.m_rotationSupplier = f;
 
 addRequirements(drivetrainSubsystem);
 }
+
+@Override
+public void initialize(){
+  
+}
+
+
+/*public DriveCommand(SwerveDriveMK4 m_drivetrainSubsystem2, DoubleSupplier d, DoubleSupplier e, DoubleSupplier f) {
+}*/
 
 
 @Override
 public  void execute() {
 // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement
 m_drivetrainSubsystem.drive( ChassisSpeeds.fromFieldRelativeSpeeds(
-m_translationXSupplier,
-m_translationYSupplier,
-m_rotationSupplier,
+m_translationXSupplier.getAsDouble(),
+m_translationYSupplier.getAsDouble(),
+m_rotationSupplier.getAsDouble(),
 m_drivetrainSubsystem.getGyroscopeRotation()
 ));
 }
 
-public  boolean isFinished(){
- return false;
-}
+
 
 @Override
 public  void end(boolean interrupted) {
 m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
 }
+
+public  boolean isFinished(){
+  return false;
+ }
 }

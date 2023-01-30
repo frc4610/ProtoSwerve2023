@@ -24,19 +24,20 @@ import frc.robot.subsystems.SwerveDriveMK4;
  */
 public class RobotContainer {
   // The enum used as keys for selecting the command to run.
-  private SwerveDriveMK4 m_drivetrainSubsystem = new SwerveDriveMK4();
+  private final SwerveDriveMK4 m_drivetrainSubsystem = new SwerveDriveMK4();
   private final XboxController m_Controller = new XboxController(0);
-  private final DriveCommand m_DriveCommand = new DriveCommand(m_drivetrainSubsystem, 0.0, 0.0, 0.0);
+ // private final DriveCommand m_DriveCommand = new DriveCommand(m_drivetrainSubsystem, 0.0, 0.0, 0.0);
 
 
   public RobotContainer() {
   //  CommandScheduler.getInstance().registerSubsystem(m_drivetrainSubsystem);
-
-  m_drivetrainSubsystem.setDefaultCommand(new DriveCommand(
+//CommandScheduler.getInstance().registerSubsystem(m_drivetrainSubsystem);
+ 
+m_drivetrainSubsystem.setDefaultCommand(new DriveCommand(
     m_drivetrainSubsystem, 
-     m_Controller.getLeftX() * SwerveDriveMK4.MAX_VELOCITY_METERS_PER_SECOND,
-      m_Controller.getLeftY() * SwerveDriveMK4.MAX_VELOCITY_METERS_PER_SECOND,
-     m_Controller.getRightX() * SwerveDriveMK4.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+     this::getForwardInput,
+      this::getStrafeInput,
+     this::getRotationInput
   ));
     // Configure the button bindings
     configureButtonBindings();
@@ -52,12 +53,39 @@ public class RobotContainer {
 
   }
 
+  private static double deadband(double value, double tolerance){
+    if(Math.abs(value) < tolerance)
+    return 0.0;
+  
+    return Math.copySign(value, (value - tolerance) / (1.0 - tolerance));
+  } 
+  
+    private static double square(double value){
+      return Math.copySign(value * value, value);
+    }
+
+  private double getForwardInput(){
+    return -square(deadband(m_Controller.getLeftY(), 0.1)) * SwerveDriveMK4.MAX_VELOCITY_METERS_PER_SECOND;
+  }
+
+  private double getStrafeInput(){
+    return -square(deadband(m_Controller.getLeftX(), 0.1)) * SwerveDriveMK4.MAX_VELOCITY_METERS_PER_SECOND;
+  }
+  private double getRotationInput(){
+    return -square(deadband(m_Controller.getRightX(), 0.1)) * SwerveDriveMK4.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    */
-  public Command getAutonomousCommand() {
+  /*public Command getAutonomousCommand() {
     return null;
   
   }
+
+  public static void startDrive(){
+
+  }*/
+
 
 }
